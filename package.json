@@ -1,0 +1,52 @@
+{
+  "name": "flutter-previewer",
+  "displayName": "Flutter Previewer",
+  "description": "Generate Flutter @Preview() functions from widgets",
+  "version": "0.0.1",
+  "publisher": "yourPublisherName",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:dart"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "flutterPreviewer.makePreview",
+        "title": "Make previewer",
+        "category": "Flutter"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "flutterPreviewer.makePreview",
+          "when": "editorLangId == dart"
+        }
+      ]
+    },
+    "languages": [
+      {
+        "id": "dart",
+        "extensions": [
+          ".dart"
+        ]
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "@types/node": "^18.0.0",
+    "typescript": "^5.0.0"
+  }
+}
