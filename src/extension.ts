@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 
 export function activate(context: vscode.ExtensionContext) {
+  // Code action (Ctrl + .)
   context.subscriptions.push(
     vscode.languages.registerCodeActionsProvider(
       "dart",
@@ -11,16 +12,39 @@ export function activate(context: vscode.ExtensionContext) {
     )
   );
 
+  // Command (right-click, palette, code action)
   context.subscriptions.push(
     vscode.commands.registerCommand(
       "flutterPreviewer.makePreview",
-      async (document: vscode.TextDocument, widgetText: string) => {
+      async (document?: vscode.TextDocument, widgetText?: string) => {
+        const editor = vscode.window.activeTextEditor;
+        if (!editor) {
+          vscode.window.showErrorMessage("No active editor found!");
+          return;
+        }
+
+        // Always get document from editor if undefined
+        document ??= editor.document;
+
+        // Always get selection start
+        const position = editor.selection.active;
+
+        // If widgetText not provided, extract from cursor
+        widgetText ??= extractWidgetCall(document, position);
+
+        if (!widgetText) {
+          vscode.window.showWarningMessage(
+            "Place the cursor on a widget constructor"
+          );
+          return;
+        }
+
         const previewCode = buildPreview(widgetText);
         const edit = new vscode.WorkspaceEdit();
 
         const allText = document.getText();
 
-        // Add preview import if missing
+        // Add import if missing
         if (!allText.includes("package:flutter/widget_previews.dart")) {
           edit.insert(
             document.uri,
@@ -29,16 +53,14 @@ export function activate(context: vscode.ExtensionContext) {
           );
         }
 
-        // Insert preview at the end of the file
+        // Insert preview at end
         const end = document.lineAt(document.lineCount - 1).range.end;
         edit.insert(document.uri, end, `\n\n${previewCode}`);
 
         await vscode.workspace.applyEdit(edit);
+        await vscode.commands.executeCommand("editor.action.formatDocument");
 
-        // Format the file
-        await vscode.commands.executeCommand(
-          "editor.action.formatDocument"
-        );
+        vscode.window.showInformationMessage("Widget preview created ✅");
       }
     )
   );
@@ -53,13 +75,13 @@ class PreviewerCodeActionProvider implements vscode.CodeActionProvider {
     if (!widgetCall) return;
 
     const action = new vscode.CodeAction(
-      "Make previewer",
+      "Make Previewer",
       vscode.CodeActionKind.Refactor
     );
 
     action.command = {
       command: "flutterPreviewer.makePreview",
-      title: "Make previewer",
+      title: "Make Previewer",
       arguments: [document, widgetCall],
     };
 
@@ -74,20 +96,20 @@ class PreviewerCodeActionProvider implements vscode.CodeActionProvider {
 function extractWidgetCall(
   document: vscode.TextDocument,
   position: vscode.Position
-): string | null {
+): string | undefined {
   const text = document.getText();
 
   const wordRange = document.getWordRangeAtPosition(
     position,
     /[A-Z][A-Za-z0-9_]*/
   );
-  if (!wordRange) return null;
+  if (!wordRange) return undefined;
 
   const startOffset = document.offsetAt(wordRange.start);
   let i = document.offsetAt(wordRange.end);
 
   // Must be followed by '('
-  if (text[i] !== "(") return null;
+  if (text[i] !== "(") return undefined;
 
   let parenCount = 0;
 
@@ -102,7 +124,7 @@ function extractWidgetCall(
     i++;
   }
 
-  return null;
+  return undefined;
 }
 
 function buildPreview(widgetText: string): string {
@@ -110,9 +132,7 @@ function buildPreview(widgetText: string): string {
   const widgetName = match ? match[0] : "widget";
 
   const functionName =
-    widgetName.charAt(0).toLowerCase() +
-    widgetName.slice(1) +
-    "Preview";
+    widgetName.charAt(0).toLowerCase() + widgetName.slice(1) + "Preview";
 
   return `
 @Preview()

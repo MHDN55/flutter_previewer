@@ -18,18 +18,10 @@
     "commands": [
       {
         "command": "flutterPreviewer.makePreview",
-        "title": "Make previewer",
+        "title": "Make Previewer",
         "category": "Flutter"
       }
     ],
-    "menus": {
-      "editor/context": [
-        {
-          "command": "flutterPreviewer.makePreview",
-          "when": "editorLangId == dart"
-        }
-      ]
-    },
     "languages": [
       {
         "id": "dart",

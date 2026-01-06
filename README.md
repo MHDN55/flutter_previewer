@@ -1,71 +1,106 @@
-# flutter-previewer README
+# Flutter Previewer
 
-This is the README for your extension "flutter-previewer". After writing up a brief description, we recommend including the following sections.
+![Extension Icon](icon.png)
 
-## Features
+Flutter Previewer is a VS Code extension that lets you quickly generate Flutter
+`@Preview()` functions directly from any widget constructor using **Ctrl + .**
+(Code Actions).
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
-
-For example if there is an image subfolder under your extension project workspace:
-
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
-
-## Requirements
-
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
-
-## Extension Settings
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
+No right-click. No command palette. Just place your cursor and preview 🚀
 
 ---
 
-## Following extension guidelines
+## ✨ Features
 
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
+- Generate Flutter `@Preview()` functions automatically
+- Works directly from **Ctrl + . (Quick Fix / Refactor)**
+- Detects widget constructor under the cursor
+- Supports multiline widget constructors
+- Automatically adds `widget_previews` import if missing
+- Formats the file after generation
 
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
+---
 
-## Working with Markdown
+## 🚀 How to Use
 
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
+1. Open a Dart file
+2. Place your cursor on a widget constructor:
 
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
+```dart
+MyAwesomeWidget(
+  title: 'Hello',
+  count: 3,
+)
+```
 
-## For more information
+3. Press **Ctrl + .**
+4. Select **“Make Previewer”**
+5. Done 🎉
 
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
+A preview function will be generated at the end of the file.
 
-**Enjoy!**
+---
+
+## 🧩 Generated Output Example
+
+```dart
+@Preview()
+Widget myAwesomeWidgetPreview() {
+  return MaterialApp(
+    debugShowCheckedModeBanner: false,
+    home: Scaffold(
+      body: Center(
+        child: MyAwesomeWidget(
+          title: 'Hello',
+          count: 3,
+        ),
+      ),
+    ),
+  );
+}
+```
+
+---
+
+## 📦 Requirements
+
+- Flutter project
+- Dart language support
+- `widget_previews` package available in your project
+
+```yaml
+dependencies:
+  widget_previews: ^latest
+```
+
+---
+
+## ⚙️ Extension Details
+
+- **Activation**: Dart files only
+- **Command ID**: `flutterPreviewer.makePreview`
+- **Trigger**: Code Action (`Ctrl + .`)
+
+---
+
+## 🛠️ Known Limitations
+
+- The cursor must be placed on a widget constructor name
+- Does not yet detect StatelessWidget / StatefulWidget classes
+- Always wraps the widget with `MaterialApp`
+
+---
+
+## 🗺️ Roadmap
+
+- Smart detection of `MaterialApp` / `CupertinoApp`
+- Support StatelessWidget / StatefulWidget previews
+- Optional preview insertion location
+- Custom preview templates
+
+---
+
+## 📄 License
+
+MIT
+
