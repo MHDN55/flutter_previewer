@@ -1,9 +1,10 @@
 {
-  "name": "flutter-previewer",
-  "displayName": "Flutter Previewer",
+  "name": "flutter-widget-previewer",
+  "displayName": "Flutter widget Previewer",
   "description": "Generate Flutter @Preview() functions from widgets",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "MHDN",
+  "icon": "icon.png",
   "engines": {
     "vscode": "^1.85.0"
   },
@@ -17,8 +18,8 @@
   "contributes": {
     "commands": [
       {
-        "command": "flutterPreviewer.makePreview",
-        "title": "Make Previewer",
+        "command": "flutterWidgetPreviewer.makePreview",
+        "title": "Make Widget Previewer",
         "category": "Flutter"
       }
     ],
